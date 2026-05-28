@@ -1,0 +1,74 @@
+# Step 1: Import libraries
+import numpy as np
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.datasets import mnist
+
+# Step 2: Load dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# Step 3: Preprocessing
+# Normalize
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Reshape to (28,28,1)
+x_train = x_train.reshape(-1, 28, 28, 1)
+x_test = x_test.reshape(-1, 28, 28, 1)
+
+# One-hot encoding
+y_train = keras.utils.to_categorical(y_train, 10)
+y_test = keras.utils.to_categorical(y_test, 10)
+
+# Step 4: Build LeNet-5 Model
+model = keras.Sequential()
+
+# C1: Conv Layer
+model.add(layers.Conv2D(6, kernel_size=(5,5), activation='tanh', input_shape=(28,28,1)))
+
+# S2: Pooling
+model.add(layers.AveragePooling2D(pool_size=(2,2)))
+
+# C3: Conv Layer
+model.add(layers.Conv2D(16, kernel_size=(5,5), activation='tanh'))
+
+# S4: Pooling
+model.add(layers.AveragePooling2D(pool_size=(2,2)))
+
+# Flatten
+model.add(layers.Flatten())
+
+# Fully Connected Layers
+model.add(layers.Dense(120, activation='tanh'))
+model.add(layers.Dense(84, activation='tanh'))
+
+# Output Layer
+model.add(layers.Dense(10, activation='softmax'))
+
+# Step 5: Compile
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Step 6: Train
+history= model.fit(x_train, y_train, epochs=5, batch_size=64, validation_split=0.1, verbose=1)
+
+# Step 7: Evaluate
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print("Test Accuracy:", test_acc)
+last_train_acc = history.history['accuracy'][-1]
+print("Last Epoch Training Accuracy:", last_train_acc)
+
+last_val_acc = history.history['val_accuracy'][-1]
+print("Last Epoch Validation Accuracy:", last_val_acc)
+
+print("Test Accuracy:", test_acc)
+#sample image
+import matplotlib.pyplot as plt
+plt.imshow(x_train[0].reshape(28,28), cmap='gray')
+plt.title("Sample Image")
+plt.show()
+#prediction of sample image
+prediction = model.predict(x_train[0].reshape(1,28,28,1))
+predicted_label = np.argmax(prediction)
+print("\nPredicted Label:", predicted_label)

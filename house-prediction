@@ -1,0 +1,67 @@
+# Import libraries
+import pandas as pd
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
+# Load California Housing dataset
+data = fetch_california_housing()
+
+# Input features and target
+X = data.data
+y = data.target
+
+# Split dataset into training and testing
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
+# Normalize the features
+scaler = StandardScaler()
+
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Build MLP model
+model = Sequential()
+
+# Input + Hidden Layers
+model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
+model.add(Dense(32, activation='relu'))
+
+# Output Layer
+model.add(Dense(1))
+
+# Compile model
+model.compile(
+    optimizer='adam',
+    loss='mse',
+    metrics=['mae']
+)
+
+# Train model
+history = model.fit(
+    X_train,
+    y_train,
+    epochs=50,
+    batch_size=32,
+    validation_split=0.2,
+    verbose=1
+)
+
+# Evaluate model
+loss, mae = model.evaluate(X_test, y_test)
+
+print("Test Loss:", loss)
+print("Mean Absolute Error:", mae)
+
+# Predict house prices
+predictions = model.predict(X_test[:5])
+
+print("Predicted Prices:")
+print(predictions)
+
+print("Actual Prices:")
+print(y_test[:5])

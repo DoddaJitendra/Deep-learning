@@ -1,0 +1,44 @@
+# Install libraries
+!pip install transformers torch
+
+# Import libraries
+import torch
+from transformers import BertTokenizer, BertForSequenceClassification
+
+# Step 1: Load pre-trained BERT tokenizer and model
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+model = BertForSequenceClassification.from_pretrained(
+    'textattack/bert-base-uncased-imdb'
+)
+
+# Step 2: Input sentence
+text = "movie was not good"
+
+# Step 3: Convert sentence into BERT format
+inputs = tokenizer(
+    text,
+    return_tensors='pt',
+    truncation=True,
+    padding=True
+)
+
+# Step 4: Predict sentiment
+outputs = model(**inputs)
+
+# Step 5: Get logits
+logits = outputs.logits
+print("Logits:", logits)
+
+# Step 6: Convert logits into probabilities
+probabilities = torch.nn.functional.softmax(logits, dim=-1)
+print("Probabilities:", probabilities)
+
+# Step 7: Get predicted class
+predicted_class = torch.argmax(probabilities, dim=-1).item()
+
+# Step 8: Print sentiment
+if predicted_class == 1:
+    print("Positive")
+else:
+    print("Negative")

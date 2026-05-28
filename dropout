@@ -1,0 +1,77 @@
+import numpy as np
+import matplotlib.pyplot as plt
+X, y = make_circles(n_samples=100, noise=0.1, random_state=1)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=2)
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.optimizers import Adam
+model = Sequential()
+
+model.add(Dense(128, input_dim=2, activation="relu"))
+model.add(Dense(128, activation="relu"))
+model.add(Dense(1, activation="sigmoid"))
+
+model.summary()
+
+model.compile(loss='binary_crossentropy', optimizer=Adam(learning_rate=0.01), metrics=['accuracy'])
+
+history = model.fit(X, y, epochs=500, validation_split = 0.2,verbose=1)
+train_acc = history.history['accuracy'][-1] *100
+val_acc = history.history['val_accuracy'][-1] * 100
+
+print(f"Last Epoch Training Accuracy: {train_acc:.2f}%")
+print(f"Last Epoch Validation Accuracy: {val_acc:.2f}%")
+print(f"Difference in Accuracy: {abs(train_acc - val_acc):.2f}%")
+if train_acc - val_acc >= 5:
+    print("\nOverfitting is there in the model")
+else:
+    print("\nNo Overfitting in the model")
+from mlxtend.plotting import plot_decision_regions
+plot_decision_regions(X, y.astype('int'), clf=model, legend=2)
+plt.xlim(-0.7,0.5)
+plt.ylim(-0.8,0.8)
+plt.show()
+plt.plot(history.history['loss'], label="Training loss")
+plt.plot(history.history['val_loss'],label="validation loss")
+plt.legend()
+plt.show()
+plt.plot(history.history['accuracy'], label="Training Accuracy")
+plt.plot(history.history['val_accuracy'], label="Validation Accuracy")
+plt.legend()
+plt.show()
+model = Sequential()
+
+model.add(Dense(128, input_dim=2, activation="relu"))
+model.add(Dropout(0.6))
+model.add(Dense(128, activation="relu"))
+model.add(Dropout(0.7))
+model.add(Dense(1, activation="sigmoid"))
+model.summary()
+
+model.compile(loss='binary_crossentropy', optimizer=Adam(learning_rate=0.01), metrics=['accuracy'])
+
+history = model.fit(X, y, epochs=500, validation_split = 0.2,verbose=1)
+train_acc = history.history['accuracy'][-1] *100
+val_acc = history.history['val_accuracy'][-1] * 100
+
+print(f"Last Epoch Training Accuracy: {train_acc:.2f}%")
+print(f"Last Epoch Validation Accuracy: {val_acc:.2f}%")
+print(f"Difference in Accuracy: {abs(train_acc - val_acc):.2f}%")
+if train_acc - val_acc >= 5:
+    print("\nOverfitting is there in the model")
+else:
+    print("\nNo Overfitting in the model")
+plot_decision_regions(X, y.astype('int'), clf=model, legend=2)
+plt.xlim(-0.7,0.5)
+plt.ylim(-0.8,0.8)
+plt.title('p = 0.5')
+plt.show()
+plt.plot(history.history['loss'],label="Training loss")
+plt.plot(history.history['val_loss'], label="validation loss")
+plt.legend()
+plt.show()
+plt.plot(history.history['accuracy'], label="Training accuracy")
+plt.plot(history.history['val_accuracy'], label="validation accuracy")
+plt.legend()
+plt.show()

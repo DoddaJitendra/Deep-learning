@@ -1,0 +1,148 @@
+#Import libraries
+import tensorflow as tf
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+from tensorflow.keras.optimizers import SGD, Adam
+import matplotlib.pyplot as plt
+import time
+# Load and preprocess dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+# model creation
+def create_model():
+    model = Sequential([
+        Flatten(input_shape=(28, 28)),
+        Dense(128, activation='relu', kernel_initializer='glorot_uniform'),
+        Dense(10, activation='softmax', kernal_initializer='glorot_uniform')
+    ])
+
+    return model
+# 1. Batch gradient descent
+model = create_model()
+model.compile(
+        optimizer=SGD(learning_rate=0.01),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']     )
+
+start = time.time()
+history = model.fit(x_train, y_train,epochs=5,batch_size=len(x_train),verbose=1)
+end = time.time()
+print("\n\nTime taken by BGD:", end - start)
+print("Train_accuracy of BGD:", history.history['accuracy'][-1] * 100)
+print("Train_loss of BGD:", history.history['loss'][-1])
+#Training Loss of BGD
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
+#Training Loss of BGD
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
+# 2. Mini batch gradient descent
+model = create_model()
+model.compile(
+        optimizer=SGD(learning_rate=0.01),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']     )
+
+start = time.time()
+history = model.fit(x_train, y_train,epochs=5,batch_size=500,verbose=1)
+end = time.time()
+print("\n\nTime taken by MBGD:", end - start)
+print("Train_accuracy of MBGD:", history.history['accuracy'][-1] * 100)
+print("Train_loss of MBGD:", history.history['loss'][-1])
+# Training Loss of MBGD
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
+# 3. Mini batch gradient descent
+model = create_model()
+model.compile(
+        optimizer=SGD(learning_rate=0.01),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']     )
+
+start = time.time()
+history = model.fit(x_train, y_train,epochs=5,batch_size=50,verbose=1)
+end = time.time()
+print("\n\nTime taken by MBGD:", end - start)
+print("Train_accuracy of MBGD:", history.history['accuracy'][-1] * 100)
+print("Train_loss of MBGD:", history.history['loss'][-1])
+# Training Loss of MBGD
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
+# 4. Momentum based gradient descent optimizer
+model = create_model()
+model.compile(optimizer=SGD(learning_rate=0.01,momentum=0.9),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']   )
+
+start = time.time()
+history = model.fit(x_train, y_train,epochs=5,batch_size=50,verbose=1)
+end = time.time()
+print("\n\nTime taken by Momentum based GD:", end - start)
+print("Train_accuracy of Momentum based GD:", history.history['accuracy'][-1] * 100)
+print("Train_loss of Momentum based GD:", history.history['loss'][-1])
+# Training Loss of Momentum based gradient descent
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
+# 5. Adam optimizer
+model = create_model()
+model.compile(optimizer=Adam(learning_rate=0.01),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy']   )
+
+
+start = time.time()
+history = model.fit(x_train, y_train,epochs=5,batch_size=50,verbose=1)
+end = time.time()
+print("\n\nTime taken by Adam :", end - start)
+print("Train_accuracy of Adam:", history.history['accuracy'][-1] * 100)
+print("Train_loss of Adam:", history.history['loss'][-1])
+# Training Loass of Adam
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
+# 6. Stochastic gradient descent optimizer
+model = create_model()
+model.compile(optimizer=SGD(learning_rate=0.01),
+        loss='sparse_categorical_crossentropy',
+        metrics=['accuracy'] )
+
+
+start = time.time()
+history = model.fit(x_train, y_train,epochs=5,batch_size=1,verbose=1)
+end = time.time()
+print("\n\nTime taken by SGD:", end - start)
+print("Train_accuracy of SGD:", history.history['accuracy'][-1] * 100)
+print("Train_loss of SGD:", history.history['loss'][-1])
+# Training Loss of SGD
+plt.plot(history.history['loss'],label='Training Loss')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.title('Training Loss Graph')
+plt.legend()
+plt.show()
